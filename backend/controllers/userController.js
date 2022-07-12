@@ -2,35 +2,36 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
-const { create } = require('../models/userModel')
-const { use } = require('../routes/goalRoutes')
+const {create} = require('../models/userModel')
+const {use} = require('../routes/goalRoutes')
 
 // @desc Register user
 // @route POST /api/users
 // @access Public
 const registerUser = asyncHandler(async(req, res) => {
-    const {name, email, password} = req.body
+    const {name, email, password} = req.body;
     if(!name || !email || !password){
         res.status(400)
-        throw Error('Please add all fields')
+        throw Error('Please add all fields');
     }
     // check if user exist
-    const userExists = await User.findOne({email})
+    const userExists = await User.findOne({email});
 
     if(userExists){
         res.status(400)
-        throw Error('User already exists')
+        throw Error('User already exists');
     }
     // hash password
     const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     // create user
     const user = await User.create({
         name,
         email,
         password : hashedPassword
-    })
+    });
+
     if (user){
         res.status(201).json({
             __id: user.id,
@@ -39,11 +40,11 @@ const registerUser = asyncHandler(async(req, res) => {
             token : generateToken(user._id),
         });
     } else{
-        res.status(4000)
-        throw Error('Invalid user data')
+        res.status(400);
+        throw Error('Invalid user data');
     }
 
-})
+});
 
 // @desc Register user
 // @route POST /api/users/login
@@ -52,7 +53,7 @@ const loginUser = asyncHandler(async(req,res) => {
     const {email, password} = req.body
 
     // check for user email
-    const user = await User.findOneAndRemove({email})
+    const user = await User.findOne({email});
 
     if(user && (await bcrypt.compare(password, user.password))){
         res.json({
@@ -65,8 +66,7 @@ const loginUser = asyncHandler(async(req,res) => {
         res.status(400)
         throw Error('Invalid credentials')
     }
-
-})
+});
 
 // @desc Register user
 // @route POST /api/users/login

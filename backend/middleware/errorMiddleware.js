@@ -1,6 +1,4 @@
-const res = require("express/lib/response")
-
-const erroHandler = (err, req, next) =>{
+const errorHandler = (err, req, next) =>{
     const statusCode = res.statusCode ? res.statusCode : 500
 
     res.status (statusCode)
@@ -12,5 +10,5 @@ const erroHandler = (err, req, next) =>{
 }
 
 module.exports = {
-    erroHandler
+    errorHandler
 }
