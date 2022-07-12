@@ -78,8 +78,8 @@ const getMe = asyncHandler(async(req,res) => {
         id: _id,
         name,
         amail,
-    }):
-})
+    });
+});
 
 // generate JWT
 const generateToken = (id) => {
